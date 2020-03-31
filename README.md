@@ -1,2 +1,2 @@
 # sous-chef
-A voice assistant for cooking
+A voice assistant for recipe-based cooking
