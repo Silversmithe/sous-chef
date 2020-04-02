@@ -1,5 +1,5 @@
 #
-#
+# TimerEngine.py
 #
 
 import threading
@@ -11,12 +11,18 @@ from objects.Signals import Signals
 
 class TimerEngine(threading.Thread):
 
-    def __init__(self, signals, manager, manager_lock):
+    def __init__(self, signals, timer_manager, phrases):
         threading.Thread.__init__(self)
         # interface data
-        self.__signals = signals
-        self.__manager = manager
-        self.__manager_lock = manager_lock
+        self.__signals_lock = signals[0]
+        self.__signals = signals[1]
+
+        self.__manager_lock = timer_manager[0]
+        self.__manager = timer_manager[1]
+
+        self.__phrases_lock = phrases[0]
+        self.__phrases = phrases[1]
+
         # state data
         self.__current_time = None
 
@@ -30,6 +36,8 @@ class TimerEngine(threading.Thread):
                     if timer.end_time < self.__current_time and timer.is_active == True:
                         print('{} timer completed!'.format(timer.pneumonic))
                         timer.is_active = False
+                        with self.__phrases_lock:
+                            self.__phrases.append("{} timer completed!".format(timer.pneumonic))
 
             time.sleep(0.1)
 
